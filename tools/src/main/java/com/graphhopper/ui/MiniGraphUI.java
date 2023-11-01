@@ -96,8 +96,8 @@ public class MiniGraphUI {
 
     public static void main(String[] strs) {
         PMap args = PMap.read(strs);
-        args.putObject("datareader.file", args.getString("datareader.file", "core/files/monaco.osm.gz"));
-        args.putObject("graph.location", args.getString("graph.location", "tools/target/mini-graph-ui-gh"));
+        args.putObject("datareader.file", args.getString("datareader.file", "core/files/andorra.osm.gz"));
+        args.putObject("graph.location", args.getString("graph.location", "tools/target/mini-graph-ui-gh2"));
         GraphHopperConfig ghConfig = new GraphHopperConfig(args);
         ghConfig.setProfiles(Arrays.asList(
                 new Profile("profile")
@@ -115,7 +115,6 @@ public class MiniGraphUI {
         boolean useCH = args.getBool("minigraphui.useCH", false);
         new MiniGraphUI(hopper, debug, useCH).visualize();
     }
-
     public MiniGraphUI(GraphHopper hopper, boolean debug, boolean useCH) {
         this.graph = hopper.getBaseGraph();
         this.na = graph.getNodeAccess();
@@ -306,7 +305,7 @@ public class MiniGraphUI {
             mainPanel.setBuffering(false);
         }
     }
-
+    //return match Algorithm
     private RoutingAlgorithm createAlgo(GraphHopper hopper, QueryGraph qGraph) {
         Profile profile = hopper.getProfiles().iterator().next();
         if (useCH) {

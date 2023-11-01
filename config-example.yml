@@ -13,7 +13,7 @@ graphhopper:
   # or the CustomWeighting class for the raw details.
   #
   # In general a profile consists of the following
-  # - name (required): a unique string identifier for the profile
+  # - name (required): a unique string identifier for the q
   # - vehicle (required): refers to the `graph.vehicles` used for this profile
   # - weighting (required): the weighting used for this profile like custom
   # - turn_costs (true/false, default: false): whether or not turn restrictions should be applied for this profile.
@@ -27,19 +27,25 @@ graphhopper:
   #
   # To prevent long running routing queries you should usually enable either speed or hybrid mode for all the given
   # profiles (see below). Or at least limit the number of `routing.max_visited_nodes`.
-
+  graph.vehicles: roads|transportation_mode=HGV,car
+  graph.encoded_values: toll,hgv,surface,max_width,max_height
   profiles:
     - name: car
       vehicle: car
       custom_model:
         distance_influence: 70
-#      turn_costs: true
+#        turn_costs: true
 #      u_turn_costs: 60
 
-#    - name: bike
-#      # to use the bike vehicle make sure to not ignore cycleways etc., see import.osm.ignored_highways below
-#      vehicle: bike
-#      custom_model_files: [bike.json, bike_elevation.json]
+    - name: bike
+      # to use the bike vehicle make sure to not ignore cycleways etc., see import.osm.ignored_highways below
+      vehicle: bike
+      custom_model_files: [bike.json]
+
+    - name: truck
+      vehicle: roads
+      weighting: custom
+      custom_model_files: [ truck.json ]
 
   # instead of the inbuilt custom models (see ./core/src/main/resources/com/graphhopper/custom_models)
   # you can specify a folder where to find your own custom model files
@@ -53,6 +59,7 @@ graphhopper:
   # usage) and the routing will also be slower than with `turn_costs: false`.
   profiles_ch:
     - profile: car
+    - profile: truck
 
   # Hybrid mode:
   # Similar to speed mode, the hybrid mode (Landmarks, LM) also speeds up routing by doing calculating auxiliary data
@@ -189,7 +196,7 @@ graphhopper:
   # motorized vehicles. This leads to a smaller and less dense graph, because there are fewer ways (obviously),
   # but also because there are fewer crossings between highways (=junctions).
   # Another typical example is excluding 'motorway', 'trunk' and maybe 'primary' highways for bicycle or pedestrian routing.
-  import.osm.ignored_highways: footway,cycleway,path,pedestrian,steps # typically useful for motorized-only routing
+  import.osm.ignored_highways: footway,pedestrian,steps # typically useful for motorized-only routing
   # import.osm.ignored_highways: motorway,trunk # typically useful for non-motorized routing
 
   # configure the memory access, use RAM_STORE for well equipped servers (default and recommended)

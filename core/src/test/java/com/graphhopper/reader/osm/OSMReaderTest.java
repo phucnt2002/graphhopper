@@ -85,7 +85,8 @@ public class OSMReaderTest {
         GraphHopper hopper = new GraphHopperFacade(file1).importOrLoad();
         BaseGraph graph = hopper.getBaseGraph();
         StorableProperties properties = hopper.getProperties();
-
+//        String currentDir = System.getProperty("user.dir");
+//        System.out.println("Current dir using System:" + currentDir);
         assertNotNull(properties.get("datareader.import.date"));
         assertNotEquals("", properties.get("datareader.import.date"));
 

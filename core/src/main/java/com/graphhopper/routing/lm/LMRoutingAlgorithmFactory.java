@@ -47,6 +47,7 @@ public class LMRoutingAlgorithmFactory implements RoutingAlgorithmFactory {
             throw new IllegalStateException("Initialize landmark storage before creating algorithms");
         int activeLM = Math.max(1, opts.getHints().getInt(Parameters.Landmark.ACTIVE_COUNT, defaultActiveLandmarks));
         final String algoStr = opts.getAlgorithm();
+        System.out.println("Algorithms is used:"+ algoStr);
         final Weighting weighting = g.wrapWeighting(w);
         if (ASTAR.equalsIgnoreCase(algoStr)) {
             double epsilon = opts.getHints().getDouble(Parameters.Algorithms.AStar.EPSILON, 1);
