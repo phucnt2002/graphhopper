@@ -18,7 +18,7 @@ import static com.graphhopper.json.Statement.Op.MULTIPLY;
 public class HeadingExample {
     public static void main(String[] args) {
         String relDir = args.length == 1 ? args[0] : "";
-        GraphHopper hopper = createGraphHopperInstance(relDir + "core/files/andorra.osm.pbf");
+        GraphHopper hopper = createGraphHopperInstance(relDir + "map.osm");
 
         without_heading(hopper);
         with_heading_start(hopper);
@@ -43,7 +43,7 @@ public class HeadingExample {
     }
 
     static void without_heading(GraphHopper hopper) {
-        GHRequest request = new GHRequest(new GHPoint(42.566757, 1.597751), new GHPoint(42.567396, 1.597807)).
+        GHRequest request = new GHRequest(new GHPoint(10.860047,106.768456), new GHPoint(10.840832,106.787422)).
                 setProfile("car");
         GHResponse response = hopper.route(request);
         if (response.hasErrors())
@@ -52,7 +52,7 @@ public class HeadingExample {
     }
 
     static void with_heading_start(GraphHopper hopper) {
-        GHRequest request = new GHRequest(new GHPoint(42.566757, 1.597751), new GHPoint(42.567396, 1.597807)).
+        GHRequest request = new GHRequest(new GHPoint(10.860047,106.768456), new GHPoint(10.840832,106.787422)).
                 setHeadings(Arrays.asList(270d)).
                 // important: if CH is enabled on the server-side we need to disable it for each request that uses heading,
                 // because heading is not supported by CH
@@ -65,7 +65,7 @@ public class HeadingExample {
     }
 
     static void with_heading_start_stop(GraphHopper hopper) {
-        GHRequest request = new GHRequest(new GHPoint(42.566757, 1.597751), new GHPoint(42.567396, 1.597807)).
+        GHRequest request = new GHRequest(new GHPoint(10.860047,106.768456), new GHPoint(10.840832,106.787422)).
                 setHeadings(Arrays.asList(270d, 180d)).
                 putHint(Parameters.CH.DISABLE, true).
                 setProfile("car");
@@ -76,7 +76,7 @@ public class HeadingExample {
     }
 
     static void with_heading_stop(GraphHopper hopper) {
-        GHRequest request = new GHRequest(new GHPoint(42.566757, 1.597751), new GHPoint(42.567396, 1.597807)).
+        GHRequest request = new GHRequest(new GHPoint(10.860047,106.768456), new GHPoint(10.840832,106.787422)).
                 setHeadings(Arrays.asList(Double.NaN, 180d)).
                 putHint(Parameters.CH.DISABLE, true).
                 setProfile("car");
@@ -87,7 +87,7 @@ public class HeadingExample {
     }
 
     static void with_heading_start_stop_lower_penalty(GraphHopper hopper) {
-        GHRequest request = new GHRequest(new GHPoint(42.566757, 1.597751), new GHPoint(42.567396, 1.597807)).
+        GHRequest request = new GHRequest(new GHPoint(10.860047,106.768456), new GHPoint(10.840832,106.787422)).
                 setHeadings(Arrays.asList(270d, 180d)).
                 putHint(Parameters.Routing.HEADING_PENALTY, 10).
                 putHint(Parameters.CH.DISABLE, true).

@@ -77,7 +77,7 @@ public class Router {
         this.encodingManager = encodingManager;
         this.locationIndex = locationIndex;
         this.profilesByName = profilesByName;
-        this.pathDetailsBuilderFactory = pathDetailsBuilderFactory;
+            this.pathDetailsBuilderFactory = pathDetailsBuilderFactory;
         this.translationMap = translationMap;
         this.routerConfig = routerConfig;
         this.weightingFactory = weightingFactory;
@@ -107,13 +107,14 @@ public class Router {
             Solver solver = createSolver(request);
             solver.checkRequest();
             solver.init();
-
+//--------------------------------------Change routeAlt -> routeRoundTrip-------------------------------------------------------------------------------------
             if (ROUND_TRIP.equalsIgnoreCase(request.getAlgorithm())) {
                 if (!(solver instanceof FlexSolver))
                     throw new IllegalArgumentException("algorithm=round_trip only works with a flexible algorithm");
                 return routeRoundTrip(request, (FlexSolver) solver);
             } else if (ALT_ROUTE.equalsIgnoreCase(request.getAlgorithm())) {
-                return routeAlt(request, solver);
+                return routeAlt(request, (FlexSolver) solver);
+//                return routeAlt(request, solver);
             } else {
                 return routeVia(request, solver);
             }
@@ -184,7 +185,9 @@ public class Router {
         final boolean disableCH = getDisableCH(request.getHints());
         final boolean disableLM = getDisableLM(request.getHints());
         if (chEnabled && !disableCH) {
-            return createCHSolver(request, profilesByName, routerConfig, encodingManager, chGraphs);
+//      ----------------------------------------------------------------Change create---------------------------------------------------------------------------------------
+//            return createCHSolver(request, profilesByName, routerConfig, encodingManager, chGraphs);
+            return createFlexSolver(request, profilesByName, routerConfig, encodingManager, weightingFactory, graph, locationIndex);
         } else if (lmEnabled && !disableLM) {
             return createLMSolver(request, profilesByName, routerConfig, encodingManager, weightingFactory, graph, locationIndex, landmarks);
         } else {
@@ -272,6 +275,9 @@ public class Router {
         List<Snap> snaps = ViaRouting.lookup(encodingManager, request.getPoints(), solver.createSnapFilter(), locationIndex,
                 request.getSnapPreventions(), request.getPointHints(), directedEdgeFilter, request.getHeadings());
         ghRsp.addDebugInfo("idLookup:" + sw.stop().getSeconds() + "s");
+        //------------------------------------------------------------- Add new filter-------------------------------------------------------------
+//        List<Snap> snapss = ViaRouting.lookup(encodingManager, request.getPoints(), solver.createHeadingEdgeFilter(), locationIndex,
+//                request.getSnapPreventions(),  request.getPointHints(), directedEdgeFilter, request.getHeadings());
         // (base) query graph used to resolve headings, curbsides etc. this is not necessarily the same thing as
         // the (possibly implementation specific) query graph used by PathCalculator
         QueryGraph queryGraph = QueryGraph.create(graph, snaps);
@@ -401,10 +407,28 @@ public class Router {
         }
 
         protected abstract Weighting createWeighting();
-
+//---------------------------------------------------------------------------------------------------------------------------------------
         protected EdgeFilter createSnapFilter() {
             return new DefaultSnapFilter(weighting, lookup.getBooleanEncodedValue(Subnetwork.key(profile.getName())));
+//            return  new FiniteWeightFilter(weighting);
         }
+
+//            Scanner sc= new Scanner(System.in);
+//            System.out.print("Enter a option filter: ");
+//            int number = Integer.parseInt(sc.nextLine());
+//
+//            if(number == 1){
+//                return new DefaultSnapFilter(weighting, lookup.getBooleanEncodedValue(Subnetwork.key(profile.getName())));
+//            } else{
+//                System.out.print("Enter a number of filter: ");
+//                int hihi = Integer.parseInt(sc.nextLine());
+//                return new EdgeNewFilter(hihi);
+//            }
+//        }
+
+//        protected EdgeNewFilter createHeadingEdgeFilter() {
+//            return new HeadingEdgeFilter();
+//        }
 
         protected DirectedEdgeFilter createDirectedEdgeFilter() {
             BooleanEncodedValue inSubnetworkEnc = lookup.getBooleanEncodedValue(Subnetwork.key(profile.getName()));

@@ -43,7 +43,7 @@ public class Parameters {
         /**
          * Unidirectional A* (not for CH)
          */
-        public static final String ASTAR = "astar";
+        public static final String ASTAR = " ";
         /**
          * Bidirectional A*
          */
