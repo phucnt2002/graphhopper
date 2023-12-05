@@ -174,13 +174,11 @@ public class RouteResource {
         if (Helper.isEmpty(request.getProfile()) && request.getCustomModel() != null)
             // throw a dedicated exception here, otherwise a missing profile is still caught in Router
             throw new IllegalArgumentException("The 'profile' parameter is required when you use the `custom_model` parameter");
-
         PMap profileResolverHints = new PMap(request.getHints());
         profileResolverHints.putObject("profile", request.getProfile());
         profileResolverHints.putObject("has_curbsides", !request.getCurbsides().isEmpty());
         request.setProfile(profileResolver.resolveProfile(profileResolverHints));
         removeLegacyParameters(request.getHints());
-
         GHResponse ghResponse = graphHopper.route(request);
         boolean instructions = request.getHints().getBool(INSTRUCTIONS, true);
         boolean enableElevation = request.getHints().getBool("elevation", false);

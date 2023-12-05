@@ -16,7 +16,8 @@
  *  limitations under the License.
  */
 package com.graphhopper.routing.weighting.custom;
-
+import java.nio.file.*;
+import java.io.IOException;
 import com.graphhopper.json.MinMax;
 import com.graphhopper.json.Statement;
 import com.graphhopper.routing.ev.*;
@@ -36,6 +37,7 @@ import org.locationtech.jts.geom.prep.PreparedPolygon;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -100,9 +102,16 @@ public class CustomModelParser {
             throw new IllegalArgumentException("Custom Model too big: " + key.length());
 
         Class<?> clazz = customModel.isInternal() ? INTERNAL_CACHE.get(key) : null;
+        boolean flat = false;
+        for(int i = 0; i < customModel.getPriority().size(); i++){
+            if(customModel.getPriority().get(i).getCondition().replace(" ", "").equalsIgnoreCase("junction==ROUNDABOUT")){
+                flat = true;
+                break;
+            }
+        }
         if (CACHE_SIZE > 0 && clazz == null)
             clazz = CACHE.get(key);
-        if (clazz == null) {
+        if (clazz == null||flat) {
             clazz = createClazz(customModel, lookup, globalMaxSpeed, globalMaxPriority);
             if (customModel.isInternal()) {
                 INTERNAL_CACHE.put(key, clazz);
@@ -158,7 +167,6 @@ public class CustomModelParser {
             if (minMaxPriority.max < 0)
                 throw new IllegalArgumentException("maximum priority has to be >=0 but was " + minMaxPriority.max);
             List<Java.BlockStatement> priorityStatements = createGetPriorityStatements(priorityVariables, customModel, lookup);
-
             HashSet<String> speedVariables = new LinkedHashSet<>();
             MinMax minMaxSpeed = new MinMax(1, globalMaxSpeed);
             FindMinMax.findMinMax(speedVariables, minMaxSpeed, customModel.getSpeed(), lookup);
@@ -208,8 +216,38 @@ public class CustomModelParser {
      *
      * @return the created statements (parsed expressions)
      */
+
+    private static String getValueBasedOnTimeRange() {
+        // Get the current time in milliseconds
+        long currentTimeMillis = System.currentTimeMillis();
+
+        // Get the current hour using Calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(currentTimeMillis);
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+
+        // Check if the current time is between 10 AM and 11 AM
+        if (currentHour >= 8 && currentHour < 9) {
+            // Return the customized value for this time range
+            return "0";
+        } else if(currentHour >= 10 && currentHour < 11){
+            return "0";
+        }else if(currentHour >= 16 && currentHour < 18){
+            return "0";
+        }else{
+            return "0.8";
+        }
+    }
+
     private static List<Java.BlockStatement> createGetPriorityStatements(Set<String> priorityVariables,
                                                                          CustomModel customModel, EncodedValueLookup lookup) throws Exception {
+        System.out.println(customModel.getPriority());
+        for(int i = 0; i < customModel.getPriority().size(); i++){
+            if(customModel.getPriority().get(i).getCondition().replace(" ", "").equalsIgnoreCase("junction==ROUNDABOUT")){
+                String customizedValue = getValueBasedOnTimeRange();
+                customModel.getPriority().get(i).setValue(customizedValue);
+            }
+        }
         List<Java.BlockStatement> priorityStatements = new ArrayList<>(verifyExpressions(new StringBuilder(),
                 "priority entry", priorityVariables, customModel.getPriority(), lookup));
         String priorityMethodStartBlock = "double value = super.getRawPriority(edge, reverse);\n";
@@ -330,7 +368,6 @@ public class CustomModelParser {
                     throw new IllegalArgumentException("Variable not supported: " + arg);
             }
         }
-
         return ""
                 + "package com.graphhopper.routing.weighting.custom;\n"
                 + "import " + CustomWeightingHelper.class.getName() + ";\n"

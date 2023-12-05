@@ -26,6 +26,7 @@ import com.graphhopper.util.PMap;
 import com.graphhopper.util.Parameters.Routing;
 
 import static com.graphhopper.routing.weighting.TurnCostProvider.NO_TURN_COST_PROVIDER;
+import static com.graphhopper.util.Parameters.Routing.DEFAULT_HEADING_PENALTY;
 
 /**
  * Calculates the fastest route with the specified vehicle (VehicleEncoder). Calculates the weight
@@ -58,7 +59,7 @@ public class FastestWeighting extends AbstractWeighting {
 
     public FastestWeighting(BooleanEncodedValue accessEnc, DecimalEncodedValue speedEnc, EnumEncodedValue<RoadAccess> roadAccessEnc, PMap map, TurnCostProvider turnCostProvider) {
         super(accessEnc, speedEnc, turnCostProvider);
-        headingPenalty = map.getDouble(Routing.HEADING_PENALTY, Routing.DEFAULT_HEADING_PENALTY);
+        headingPenalty = map.getDouble(Routing.HEADING_PENALTY, DEFAULT_HEADING_PENALTY);
         maxSpeed = speedEnc.getMaxOrMaxStorableDecimal() / SPEED_CONV;
 
         destinationPenalty = map.getDouble(DESTINATION_FACTOR, 1);

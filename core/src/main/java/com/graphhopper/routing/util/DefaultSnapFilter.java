@@ -36,6 +36,8 @@ public class DefaultSnapFilter implements EdgeFilter {
 
     @Override
     public boolean accept(EdgeIteratorState edgeState) {
+//        long threadId = Thread.currentThread().getId();
+//        System.out.println("Thread ID: " + threadId);
         return !edgeState.get(inSubnetworkEnc) && (Double.isFinite(weighting.calcEdgeWeight(edgeState, false)) ||
                 Double.isFinite(weighting.calcEdgeWeight(edgeState, true)));
     }
