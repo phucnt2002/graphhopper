@@ -241,13 +241,13 @@ public class CustomModelParser {
 
     private static List<Java.BlockStatement> createGetPriorityStatements(Set<String> priorityVariables,
                                                                          CustomModel customModel, EncodedValueLookup lookup) throws Exception {
-        System.out.println(customModel.getPriority());
-        for(int i = 0; i < customModel.getPriority().size(); i++){
-            if(customModel.getPriority().get(i).getCondition().replace(" ", "").equalsIgnoreCase("junction==ROUNDABOUT")){
-                String customizedValue = getValueBasedOnTimeRange();
-                customModel.getPriority().get(i).setValue(customizedValue);
-            }
-        }
+//        System.out.println(customModel.getPriority());
+//        for(int i = 0; i < customModel.getPriority().size(); i++){
+//            if(customModel.getPriority().get(i).getCondition().replace(" ", "").equalsIgnoreCase("junction==ROUNDABOUT")){
+//                String customizedValue = getValueBasedOnTimeRange();
+//                customModel.getPriority().get(i).setValue(customizedValue);
+//            }
+//        }
         List<Java.BlockStatement> priorityStatements = new ArrayList<>(verifyExpressions(new StringBuilder(),
                 "priority entry", priorityVariables, customModel.getPriority(), lookup));
         String priorityMethodStartBlock = "double value = super.getRawPriority(edge, reverse);\n";
@@ -429,7 +429,6 @@ public class CustomModelParser {
             if (statement.getKeyword() == Statement.Keyword.ELSE) {
                 if (!Helper.isEmpty(statement.getCondition()))
                     throw new IllegalArgumentException("condition must be empty but was " + statement.getCondition());
-
                 expressions.append("else {").append(statement.getOperation().build(statement.getValue())).append("; }\n");
             } else if (statement.getKeyword() == Statement.Keyword.ELSEIF || statement.getKeyword() == Statement.Keyword.IF) {
                 ParseResult parseResult = ConditionalExpressionVisitor.parse(statement.getCondition(), nameInConditionValidator);
@@ -439,7 +438,13 @@ public class CustomModelParser {
                 createObjects.addAll(parseResult.guessedVariables);
                 if (statement.getKeyword() == Statement.Keyword.ELSEIF)
                     expressions.append("else ");
-                expressions.append("if (").append(parseResult.converted).append(") {").append(statement.getOperation().build(statement.getValue())).append(";}\n");
+                if(statement.getCondition().contains("ROUNDABOUT")){
+                    String customizedValue = getValueBasedOnTimeRange();
+//                    expressions.append("else {").append(statement.getOperation().build(customizedValue)).append("; }\n");
+                    expressions.append("if (").append(parseResult.converted).append(") {").append(statement.getOperation().build(customizedValue)).append(";}\n");
+                }else{
+                    expressions.append("if (").append(parseResult.converted).append(") {").append(statement.getOperation().build(statement.getValue())).append(";}\n");
+                }
             } else {
                 throw new IllegalArgumentException("The statement must be either 'if', 'else_if' or 'else'");
             }

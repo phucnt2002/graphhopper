@@ -28,7 +28,7 @@ graphhopper:
   # To prevent long running routing queries you should usually enable either speed or hybrid mode for all the given
   # profiles (see below). Or at least limit the number of `routing.max_visited_nodes`.
   graph.vehicles: roads|transportation_mode=HGV,car
-  graph.encoded_values: toll,hgv,surface,max_width,max_height,junction
+  graph.encoded_values: toll,hgv,surface,max_width,max_height,junction, max_weight
   profiles:
     - name: car
       vehicle: car

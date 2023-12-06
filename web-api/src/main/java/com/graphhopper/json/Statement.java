@@ -19,9 +19,9 @@ package com.graphhopper.json;
 
 public class Statement {
     private final Keyword keyword;
-    private String condition;
+    private final String condition;
     private final Op operation;
-    private String value;
+    private final String value;
 
     private Statement(Keyword keyword, String condition, Op operation, String value) {
         this.keyword = keyword;
@@ -44,10 +44,6 @@ public class Statement {
 
     public String getValue() {
         return value;
-    }
-
-    public void setValue(String str){
-        this.value = str;
     }
 
     public enum Keyword {
