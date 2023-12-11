@@ -27,8 +27,8 @@ graphhopper:
   #
   # To prevent long running routing queries you should usually enable either speed or hybrid mode for all the given
   # profiles (see below). Or at least limit the number of `routing.max_visited_nodes`.
-  graph.vehicles: roads|transportation_mode=HGV,car
-  graph.encoded_values: toll,hgv,surface,max_width,max_height,junction
+  graph.vehicles: roads|transportation_mode=HGV,truck
+  graph.encoded_values: toll,hgv,surface,max_width,max_height,junction,max_weight
   profiles:
     - name: car
       vehicle: car
@@ -36,16 +36,16 @@ graphhopper:
         distance_influence: 70
 #        turn_costs: true
 #      u_turn_costs: 60
-
-    - name: bike
-      # to use the bike vehicle make sure to not ignore cycleways etc., see import.osm.ignored_highways below
-      vehicle: bike
-      custom_model_files: [bike.json]
+#
+#    - name: bike
+#      # to use the bike vehicle make sure to not ignore cycleways etc., see import.osm.ignored_highways below
+#      vehicle: bike
+#      custom_model_files: [bike.json]
 
     - name: truck
       vehicle: roads
       weighting: custom
-      custom_model_files: [ truck.json ]
+      custom_model_files: [package.json]
 
   # instead of the inbuilt custom models (see ./core/src/main/resources/com/graphhopper/custom_models)
   # you can specify a folder where to find your own custom model files

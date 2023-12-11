@@ -466,7 +466,7 @@ public class CustomModelParser {
             try {
                 StringWriter sw = new StringWriter();
                 Unparser.unparse(cu, sw);
-                // System.out.println(sw.toString());
+                System.out.println(sw.toString());
                 File dir = new File(SCRIPT_FILE_DIR);
                 File temporaryFile = new File(dir, "JaninoCustomWeightingHelperSubclass" + counter + ".java");
                 Reader reader = Readers.teeReader(

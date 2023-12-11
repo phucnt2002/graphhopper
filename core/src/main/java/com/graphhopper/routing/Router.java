@@ -274,10 +274,11 @@ public class Router {
         DirectedEdgeFilter directedEdgeFilter = solver.createDirectedEdgeFilter();
         List<Snap> snaps = ViaRouting.lookup(encodingManager, request.getPoints(), solver.createSnapFilter(), locationIndex,
                 request.getSnapPreventions(), request.getPointHints(), directedEdgeFilter, request.getHeadings());
-        ghRsp.addDebugInfo("idLookup:" + sw.stop().getSeconds() + "s");
+
         //------------------------------------------------------------- Add new filter-------------------------------------------------------------
-//        List<Snap> snapss = ViaRouting.lookup(encodingManager, request.getPoints(), solver.createHeadingEdgeFilter(), locationIndex,
+//        List<Snap> snaps = ViaRouting.lookup(encodingManager, request.getPoints(), solver.createHeadingEdgeFilter(), locationIndex,
 //                request.getSnapPreventions(),  request.getPointHints(), directedEdgeFilter, request.getHeadings());
+        ghRsp.addDebugInfo("idLookup:" + sw.stop().getSeconds() + "s");
         // (base) query graph used to resolve headings, curbsides etc. this is not necessarily the same thing as
         // the (possibly implementation specific) query graph used by PathCalculator
         QueryGraph queryGraph = QueryGraph.create(graph, snaps);

@@ -17,14 +17,14 @@ public class HeadingEdgeFilter implements EdgeFilter {
 
     @Override
     public boolean accept(EdgeIteratorState edgeState) {
-        final double tolerance = 30;
+        final double tolerance = 20;
         // we only accept edges that are not too far away. It might happen that only far away edges match the heading
         // in which case we rather rely on the fallback snapping than return a match here.
         final double maxDistance = 20;
         double headingOfEdge = getHeadingOfGeometryNearPoint(edgeState, pointNearHeading, maxDistance);
         if (Double.isNaN(headingOfEdge))
             // this edge is too far away. we do not accept it.
-            return false;
+             return false;
         // we accept the edge if either of the two directions roughly has the right heading
         return Math.abs(headingOfEdge - heading) < tolerance && directedEdgeFilter.accept(edgeState, false) ||
                 Math.abs((headingOfEdge + 180) % 360 - heading) < tolerance && directedEdgeFilter.accept(edgeState, true);

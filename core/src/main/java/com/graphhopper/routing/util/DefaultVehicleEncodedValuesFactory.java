@@ -33,6 +33,9 @@ public class DefaultVehicleEncodedValuesFactory implements VehicleEncodedValuesF
         if (name.equals(CAR))
             return VehicleEncodedValues.car(configuration);
 
+        if (name.equals(TRUCK))
+            return  VehicleEncodedValues.truck(configuration);
+
         if (name.equals("car4wd"))
             throw new IllegalArgumentException("Instead of car4wd use custom_models/car4wd.json");
 

@@ -19,6 +19,7 @@
 package com.graphhopper.routing.util;
 
 import com.graphhopper.reader.osm.conditional.DateRangeParser;
+import com.graphhopper.routing.ev.EncodedValue;
 import com.graphhopper.routing.ev.EncodedValueLookup;
 import com.graphhopper.routing.util.parsers.*;
 import com.graphhopper.util.PMap;
@@ -87,6 +88,14 @@ public class VehicleTagParsers {
         );
     }
 
+    public static  VehicleTagParsers truck(EncodedValueLookup lookup, PMap properties) {
+        return  new VehicleTagParsers(
+                new TruckAccessParser(lookup, properties).init(properties.getObject("data_range_parser", new DateRangeParser())),
+                new TruckAverageSpeedParser(lookup, properties),
+                null
+        );
+    }
+    // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
     public VehicleTagParsers(TagParser accessParser, TagParser speedParser, TagParser priorityParser) {
         this.accessParser = accessParser;
         this.speedParser = speedParser;

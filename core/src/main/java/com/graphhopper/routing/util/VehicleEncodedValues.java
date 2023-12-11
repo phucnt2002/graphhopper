@@ -101,6 +101,16 @@ public class VehicleEncodedValues {
         return new VehicleEncodedValues(name, accessEnc, speedEnc, null, turnRestrictionEnc);
     }
 
+    public static VehicleEncodedValues truck(PMap properties) {
+        String name = properties.getString("name", "truck");
+        int speedBits = properties.getInt("speed_bits", 7);
+        double speedFactor = properties.getDouble("speed_factor", 2);
+        boolean turnCosts = properties.getBool("turn_costs", false);
+        BooleanEncodedValue accessEnc = VehicleAccess.create(name);
+        DecimalEncodedValue speedEnc = VehicleSpeed.create(name, speedBits, speedFactor, true);
+        BooleanEncodedValue turnRestrictionEnc = turnCosts ? TurnRestriction.create(name) : null;
+        return new VehicleEncodedValues(name, accessEnc, speedEnc, null, turnRestrictionEnc);
+    }
     public VehicleEncodedValues(String name, BooleanEncodedValue accessEnc, DecimalEncodedValue avgSpeedEnc,
                                 DecimalEncodedValue priorityEnc, BooleanEncodedValue turnRestrictionEnc) {
         this.name = name;
